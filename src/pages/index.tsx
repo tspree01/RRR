@@ -3,17 +3,33 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 import {useDropzone} from 'react-dropzone';
 import styles from '@/styles/Home.module.css'
+import {useCallback} from "react";
+import {isBigInt64Array} from "util/types";
+import {getCssModuleLocalIdent} from "next/dist/build/webpack/config/blocks/css/loaders/getCssModuleLocalIdent";
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const onDrop = useCallback((acceptedFiles:Blob[]) => {
+    acceptedFiles.forEach((file) => {
+      const reader = new FileReader()
+
+      reader.onabort = () => console.log('file reading was aborted')
+      reader.onerror = () => console.log('file reading has failed')
+      reader.onload = () => {
+        // Do whatever you want with the file contents
+        const binaryStr = reader.result
+        console.log(binaryStr)
+      }
+      reader.readAsArrayBuffer(file)
+    })
+
+
+  }, [])
   const {
     getRootProps,
     getInputProps,
-    isFocused,
-    isDragAccept,
-    isDragReject
-  } = useDropzone({accept: {'image/*': []}});
+  } = useDropzone({accept: {'image/*': []}, onDrop});
 
   return (
     <>
@@ -85,13 +101,20 @@ export default function Home() {
                 outline: 'none',
                 transition: 'border .24s ease-in-out'
               }}
-               {...getRootProps({isFocused, isDragAccept, isDragReject})}
+               {...getRootProps()}
           >
+
             <input {...getInputProps()} />
             <p>Drag 'n' drop some files here, or click to select files</p>
 
           </div>
+
         </div>
+        <script>
+          cloudVision(file);
+        </script>
+
+
 
         <div className={styles.grid}>
           <a
