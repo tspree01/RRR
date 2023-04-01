@@ -1,11 +1,20 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
+import {useDropzone} from 'react-dropzone';
 import styles from '@/styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  const {
+    getRootProps,
+    getInputProps,
+    isFocused,
+    isDragAccept,
+    isDragReject
+  } = useDropzone({accept: {'image/*': []}});
+
   return (
     <>
       <Head>
@@ -56,6 +65,31 @@ export default function Home() {
               height={31}
               priority
             />
+          </div>
+        </div>
+
+        <div>
+          <div
+              style ={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                padding: '20px',
+                borderWidth: '2px',
+                borderRadius: '2px',
+                borderColor: 'green',
+                borderStyle: 'dashed',
+                backgroundColor: '#fafafa',
+                color: '#bdbdbd',
+                outline: 'none',
+                transition: 'border .24s ease-in-out'
+              }}
+               {...getRootProps({isFocused, isDragAccept, isDragReject})}
+          >
+            <input {...getInputProps()} />
+            <p>Drag 'n' drop some files here, or click to select files</p>
+
           </div>
         </div>
 
